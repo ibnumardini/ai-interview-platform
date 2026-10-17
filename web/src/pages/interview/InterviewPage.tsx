@@ -226,6 +226,7 @@ export default function InterviewPage() {
 
   // ── State A: Pre-start ──────────────────────────────────────────────────
   if (interviewState === "idle") {
+    const consentRevoked = candidateInfo?.consent_status === "revoked";
     const requiresConsent =
       candidateInfo?.consent_required &&
       candidateInfo?.consent_status === "none" &&
@@ -242,7 +243,19 @@ export default function InterviewPage() {
           )}
         </div>
 
-        {requiresConsent ? (
+        {consentRevoked ? (
+          <div className="text-center space-y-4 py-10">
+            <div className="flex justify-center text-destructive">
+              <ShieldAlert className="h-10 w-10" />
+            </div>
+            <h2 className="text-xl font-semibold">Consent withdrawn</h2>
+            <p className="text-sm text-muted-foreground">
+              The interview cannot start without your consent, and your data has not been processed.
+              <br />
+              If you change your mind, a new invitation must be created by the hiring team.
+            </p>
+          </div>
+        ) : requiresConsent ? (
           <ConsentScreen
             consentText={candidateInfo.consent_text ?? ""}
             consentVersion={candidateInfo.consent_version ?? "v1"}
